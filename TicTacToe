@@ -1,0 +1,130 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ * By Ganesh Sonar
+ */
+package tictactoe;
+import java.awt.*;
+import java.awt.event.*;
+public class TicTacToe extends Frame
+{
+    static Frame myFrame;
+    static Graphics myGraphics; 
+    static int[] gridMark = new int[9];
+    static boolean xTurn = true;
+    static int numberClicks = 0;
+    static boolean gridDrawn = false;
+    public static void main(String[] args){
+        // create frame
+    myFrame = new Frame();
+    myFrame.setSize(300, 300);
+    myFrame.setTitle("Tic-Tac-Toe");
+    myFrame.setVisible(true);
+    myGraphics = myFrame.getGraphics();
+    myGraphics.setColor(Color.black);
+    myGraphics.drawString("CLICK FRAME TO START", 50, 100);
+        // add listener for closing frame
+    
+    myFrame.addWindowListener(new WindowAdapter()
+    {
+        public void windowClosing(WindowEvent e)
+        {
+            
+            System.exit(0);
+        }
+    });
+// add listener for mouse press
+    myFrame.addMouseListener(new MouseAdapter()
+    {
+        public void mousePressed(MouseEvent e)
+    {
+// empty for now
+        
+// if first click, draw grid and exit routine
+        if (!gridDrawn)
+        {
+            gridDrawn = true;
+            myGraphics.setColor(Color.white);
+            myGraphics.clearRect(0, 0, 300, 300);
+        // draw and initialize grid
+            for (int i = 0; i < 9; i++)
+            {
+                gridMark[i] = 0;
+            }
+        myGraphics.setColor(Color.black);
+        myGraphics.drawLine(110, 40, 110, 280);
+        myGraphics.drawLine(190, 40, 190, 280);
+        myGraphics.drawLine(30, 120, 270, 120);
+        myGraphics.drawLine(30, 200, 270, 200);
+        return;
+        }
+        int gridSelected;
+        int x = e.getX();
+        int y = e.getY();
+        // if we haven't clicked 9 times, can still click
+        if (numberClicks < 9 && x > 30 && x < 270 && y > 40 && y < 280) {
+        /* determine which grid location was clicked
+        * each square is 80 pixels x 80 pixels
+        * offset by 30 on right and 40 on top
+        * number system:
+        * 0 | 1 | 2
+        * -----------
+        * 3 | 4 | 5
+        * -----------
+        * 6 | 7 | 8
+        */
+
+            if (y > 200)
+            {
+            // one of three bottom grids
+                gridSelected = 6 + (x - 30) / 80;
+                y = 210;
+            }
+            else if (y > 120)
+            {
+            // one of three middle grids
+                gridSelected = 3 + (x - 30) / 80;
+                y = 130;
+            }
+            else
+            {
+            // one of three top grids
+                gridSelected = (x - 30) / 80;
+                y = 50;
+            }
+            // if nothing there, can draw new mark
+            if (gridMark[gridSelected] == 0)
+            {
+                numberClicks = numberClicks + 1;
+                // decide where to draw mark
+                x = 40 + (gridSelected % 3) * 80;
+            if (xTurn)
+            {
+            // draw X
+                gridMark[gridSelected] = 1;
+                myGraphics.setColor(Color.blue);
+                myGraphics.drawLine(x, y, x + 60, y + 60);
+                myGraphics.drawLine(x, y + 60, x + 60, y);
+                xTurn = false;
+                myFrame.setTitle("Tic-Tac-Toe - O's Turn");
+            }
+            else
+            {
+            // draw O
+                gridMark[gridSelected] = 2;
+                myGraphics.setColor(Color.red);
+                myGraphics.drawOval(x, y, 60, 60);
+                xTurn = true;
+                myFrame.setTitle("Tic-Tac-Toe - X's Turn");
+            }
+            if (numberClicks == 9)
+            {
+                myFrame.setTitle("Tic-Tac-Toe - Game Over");
+            }
+        }
+        }
+    }
+});
+}
+}
